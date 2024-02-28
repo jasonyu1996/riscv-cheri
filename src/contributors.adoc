@@ -29,3 +29,4 @@ This RISC-V specification has been contributed to directly or indirectly by:
 * Carl Shaw <carl.shaw@codasip.com>
 * Robert N. M. Watson <robert.watson@cl.cam.ac.uk>
 * Jonathan Woodruff <jonathan.woodruff@cl.cam.ac.uk>
+* Jason Yu <yu.zhi@comp.nus.edu.sg>

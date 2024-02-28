@@ -42,6 +42,8 @@ endif::[]
 
 // Base CHERI extension without the mode bit in capability format
 :cheri_base_ext_name:      Zcheri_purecap
+// CHERI extension adding support for the privileged architecture, including Zicsr
+:cheri_priv_ext_name:      Zcheri_priv
 // CHERI extension adding support for legacy mode
 :cheri_legacy_ext_name:    Zcheri_legacy
 // CHERI extension adding support for the mode bit in the capability format
