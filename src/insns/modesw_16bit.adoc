@@ -9,12 +9,12 @@ NOTE: *CHERI v9 Note:* This instruction is *new*.
 endif::[]
 
 Synopsis::
-Capability/Legacy Mode switching (C.MODESW), 16-bit encoding
+Capability/pass:attributes,quotes[{cheri_int_mode_name}] switching (C.MODESW), 16-bit encoding
 
-Mnemonics::
+Mnemonic::
 `c.modesw`
 
-Expansions::
+Expansion::
 `modesw`
 
 Encoding::
@@ -23,10 +23,10 @@ include::wavedrom/modesw_16bit.adoc[]
 include::modesw_common.adoc[]
 
 Exceptions::
-None
+include::require_cre.adoc[]
 
 Prerequisites::
-{c_cheri_mode_ext_names}
+{c_cheri_default_ext_names}
 
 Operation (after expansion to 32-bit encodings)::
  See <<MODESW>>

@@ -18,7 +18,7 @@ GEN_SCRIPT   = $(SCRIPTS_DIR)/generate_tables.py
 
 # Version and date
 DATE    ?= $(shell date +%Y-%m-%d)
-VERSION ?= v0.7.0
+VERSION ?= v0.8.2
 REVMARK ?= Draft
 
 # URLs for downloaded CSV files
@@ -53,31 +53,25 @@ HEADER_SOURCE := $(SRC_DIR)/riscv-cheri.adoc
 # Generated files
 GEN_SRC = $(GEN_DIR)/both_mode_insns_table_body.adoc               \
           $(GEN_DIR)/cap_mode_insns_table_body.adoc                \
-          $(GEN_DIR)/csr_added_legacy_table_body.adoc              \
+          $(GEN_DIR)/csr_added_hybrid_table_body.adoc              \
           $(GEN_DIR)/csr_added_purecap_mode_d_table_body.adoc      \
           $(GEN_DIR)/csr_added_purecap_mode_m_table_body.adoc      \
           $(GEN_DIR)/csr_added_purecap_mode_s_table_body.adoc      \
-          $(GEN_DIR)/csr_added_purecap_mode_u_table_body.adoc      \
           $(GEN_DIR)/csr_alias_action_table_body.adoc              \
           $(GEN_DIR)/csr_aliases_table_body.adoc                   \
           $(GEN_DIR)/csr_exevectors_table_body.adoc                \
           $(GEN_DIR)/csr_metadata_table_body.adoc                  \
           $(GEN_DIR)/csr_permission_table_body.adoc                \
-          $(GEN_DIR)/csr_removed_purecap_mode_d_table_body.adoc    \
-          $(GEN_DIR)/csr_removed_purecap_mode_m_table_body.adoc    \
-          $(GEN_DIR)/csr_removed_purecap_mode_s_table_body.adoc    \
-          $(GEN_DIR)/csr_removed_purecap_mode_u_table_body.adoc    \
-          $(GEN_DIR)/csr_replaced_purecap_mode_d_table_body.adoc   \
-          $(GEN_DIR)/csr_replaced_purecap_mode_m_table_body.adoc   \
-          $(GEN_DIR)/csr_replaced_purecap_mode_s_table_body.adoc   \
-          $(GEN_DIR)/csr_replaced_purecap_mode_u_table_body.adoc   \
+          $(GEN_DIR)/csr_renamed_purecap_mode_d_table_body.adoc    \
+          $(GEN_DIR)/csr_renamed_purecap_mode_m_table_body.adoc    \
+          $(GEN_DIR)/csr_renamed_purecap_mode_s_table_body.adoc    \
+          $(GEN_DIR)/csr_renamed_purecap_mode_u_table_body.adoc    \
           $(GEN_DIR)/illegal_insns_table_body.adoc                 \
           $(GEN_DIR)/legacy_mnemonic_insns_table_body.adoc         \
           $(GEN_DIR)/legacy_mode_insns_table_body.adoc             \
           $(GEN_DIR)/xlen_dependent_encoding_insns_table_body.adoc \
-          $(GEN_DIR)/Zbh_lr_sc_insns_table_body.adoc               \
-          $(GEN_DIR)/Zcheri_legacy_insns_table_body.adoc           \
-          $(GEN_DIR)/Zcheri_mode_insns_table_body.adoc             \
+          $(GEN_DIR)/Zabhlrsc_insns_table_body.adoc                \
+          $(GEN_DIR)/Zcheri_hybrid_insns_table_body.adoc           \
           $(GEN_DIR)/Zcheri_purecap_insns_table_body.adoc
 
 # AsciiDoctor command
@@ -152,7 +146,7 @@ $(BUILD_DIR):
 
 # Rule to generate all the src/generated/*.adoc from the downloaded CSVs using a Python script.
 $(GEN_SRC) &: $(CSVS) $(GEN_SCRIPT)
-	@echo "  GEN"
+	@echo "  GEN $@"
 	@$(GEN_SCRIPT) -o $(GEN_DIR) --csr $(CSV_DIR)/CHERI_CSR.csv --isa $(CSV_DIR)/CHERI_ISA.csv
 
 # Rule to download CSVs. These files are checked in and only re-downloaded when you `make download`.

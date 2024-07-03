@@ -20,7 +20,10 @@ include::wavedrom/schi.adoc[]
 
 Description::
 Copy `cs1`  to `cd` , replace the capability metadata (i.e. bits
-[CLEN-1:XLENMAX]) with `rs2`  and set `cd.tag` to 0.
+[CLEN-1:MXLEN]) with `rs2`  and set `cd.tag` to 0.
+
+Exceptions::
+include::require_cre.adoc[]
 
 Prerequisites::
 {cheri_base_ext_name}

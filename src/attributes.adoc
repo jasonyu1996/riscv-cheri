@@ -40,30 +40,35 @@ endif::[]
 // Top-level CHERI definitions
 ///////////////////////////////////////////////////////////////////////////////
 
-// Base CHERI extension without the mode bit in capability format
-:cheri_base_ext_name:      Zcheri_purecap
+// Base CHERI extension (without the mode bit in capability format)
+:cheri_base_ext_name:      Zcheripurecap
 // CHERI extension adding support for the privileged architecture, including Zicsr
-:cheri_priv_ext_name:      Zcheri_priv
-// CHERI extension adding support for legacy mode
-:cheri_legacy_ext_name:    Zcheri_legacy
-// CHERI extension adding support for the mode bit in the capability format
-:cheri_mode_ext_name:      Zcheri_mode
+:cheri_priv_ext_name:      Zcheripriv
+// CHERI extension adding support for integer pointer mode (and mode bit)
+:cheri_default_ext_name:   Zcherihybrid
 // Extension for CHERI PTE bits
-:cheri_pte_ext_name:       Zcheri_pte
+:cheri_pte_ext_name:       Zcheripte
 // Extension for CHERI capabilities in vector registers
-:cheri_vectorcap_ext_name: Zcheri_vectorcap
+:cheri_vectorcap_ext_name: Zcherivectorcap
+// Extension for thread identification
+:tid_ext_name:             Zstid
+
+:cheri_int_mode_name: _Integer Pointer Mode_
+:cheri_cap_mode_name: _Capability Pointer Mode_
 
 // Extension for supporting lr/sc.[bh]
-:lr_sc_bh_ext_name: Zbhlrsc
+:lr_sc_bh_ext_name: Zabhlrsc
+:sh4add_ext_name:   Zish4add
 
 :c_cheri_base_ext_names:   C or Zca, {cheri_base_ext_name}
-:c_cheri_legacy_ext_names: C or Zca, {cheri_legacy_ext_name}
-:c_cheri_mode_ext_names:   C or Zca, {cheri_mode_ext_name}
+:c_cheri_default_ext_names: C or Zca, {cheri_default_ext_name}
 
 :non-csrrw-or:  <<CSRRWI>>, <<CSRRS>>, <<CSRRSI>>, <<CSRRC>> or <<CSRRCI>>
 :non-csrrw-and:  <<CSRRWI>>, <<CSRRS>>, <<CSRRSI>>, <<CSRRC>> and <<CSRRCI>>
 
 :TAG_RESET_CSR: The tag of the CSR must be reset to zero. The reset values of the metadata and address fields are UNSPECIFIED.
+:REQUIRE_CRE_CSR: Access to this CSR is illegal if CRE for the current mode is zero (see <<section_cheri_disable>>).
+
 
 ///////////////////////////////////////////////////////////////////////////////
 // Cap definitions
@@ -73,18 +78,19 @@ endif::[]
 :cap_rv64_sdp_width:    4
 :cap_rv32_mw_width:    10
 :cap_rv64_mw_width:    14
-:cap_rv32_perms_width:  4
+:cap_rv32_perms_width:  5
 :cap_rv64_perms_width:  5
 :cap_rv32_addr_width:  32
 :cap_rv64_addr_width:  64
 :cap_rv32_exp_width:    5
 :cap_rv64_exp_width:    6
 
-:cheri_excep_mcause:      28
-:cheri_excep_type_pcc:     0
-:cheri_excep_type_data:    1
-:cheri_excep_type_jump:    2
-:cheri_excep_cause_tag:    0
-:cheri_excep_cause_seal:   1
-:cheri_excep_cause_perm:   2
-:cheri_excep_cause_length: 3
+:cheri_excep_mcause:         28
+:cheri_excep_type_pcc:       0
+:cheri_excep_type_data:      1
+:cheri_excep_type_jump:      2
+:cheri_excep_cause_tag:      0
+:cheri_excep_cause_seal:     1
+:cheri_excep_cause_perm:     2
+:cheri_excep_cause_inv_addr: 3
+:cheri_excep_cause_length:   4

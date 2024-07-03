@@ -10,30 +10,35 @@ Atomic Operation (AMOSWAP.C), 32-bit encoding
 
 include::xlen_variable_warning.adoc[]
 
-Capability Mode Mnemonics::
-`amoswap.c, offset(cs1)`
+pass:attributes,quotes[{cheri_cap_mode_name}] Mnemonic::
+`amoswap.c cd, cs2, offset(cs1)`
 
-Legacy Mode Mnemonics::
-`amoswap.c, offset(rs1)`
+pass:attributes,quotes[{cheri_int_mode_name}] Mnemonic::
+`amoswap.c cd, cs2, offset(rs1)`
 
 Encoding::
 include::wavedrom/amoswap_cap.adoc[]
 
-Capability Mode Description::
+pass:attributes,quotes[{cheri_cap_mode_name}] Description::
 Atomic swap of capability type, authorised by the capability in `cs1`.
 
-Legacy Mode Description::
+pass:attributes,quotes[{cheri_int_mode_name}] Description::
 Atomic swap of capability type, authorised by the capability in <<ddc>>.
 
 :cap_atomic:
 
+include::malformed_no_check.adoc[]
+
 include::atomic_exceptions.adoc[]
 
-Prerequisites for Capability Mode AMOSWAP.C::
+Exceptions::
+include::require_cre.adoc[]
+
+Prerequisites for pass:attributes,quotes[{cheri_cap_mode_name}] AMOSWAP.C::
 {cheri_base_ext_name}, and A
 
-Prerequisites for Legacy Mode AMOSWAP.C::
-{cheri_legacy_ext_name}, and A
+Prerequisites for pass:attributes,quotes[{cheri_int_mode_name}] AMOSWAP.C::
+{cheri_default_ext_name}, and A
 
 Operation::
 +

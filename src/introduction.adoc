@@ -38,8 +38,8 @@ address that is extended with metadata to protect its integrity, limit how it
 is manipulated, and control its use. This metadata includes:
 
 *  an out-of-band _tag_ implementing strong integrity protection
-(differentiating valid and invalid capabilities), This prevents confusion
-between data and capabilities.
+(differentiating valid and invalid capabilities) that prevents confusion
+between data and capabilities
 * _bounds_ limiting the range of addresses that may be dereferenced
 * _permissions_ controlling the specific operations that may be performed
 * _sealing_ which is used to support higher-level software encapsulation
@@ -59,7 +59,7 @@ Protection properties for capabilities include the ISA ensuring that
 capabilities are always derived via valid manipulations of other capabilities
 (_provenance_), that corrupted in-memory capabilities cannot be dereferenced
 (_integrity_), and that rights associated with capabilities shall only ever be
-equal or less permissive (_monotonicity_).Tampering or modifying capabilities
+equal or less permissive (_monotonicity_). Tampering or modifying capabilities
 in an attempt to elevate their rights will yield an invalid capability as the
 tag will be cleared. Attempting to dereference via an invalid capability
 will result in a hardware exception.
@@ -67,7 +67,7 @@ will result in a hardware exception.
 CHERI capabilities may be held in registers or in memories, and are loaded,
 stored, and dereferenced using CHERI-aware instructions that expect capability
 operands rather than integer addresses. On hardware reset, initial capabilities
-are made available to software via special and general-purpose capability
+are made available to software via capability
 registers. All other capabilities will be derived from these initial valid
 capabilities through valid capability transformations.
 
@@ -87,30 +87,30 @@ backwards-compatible with RISC-V
 {cheri_priv_ext_name}:: Extends {cheri_base_ext_name} with integration with
 the privileged architecture of RISC-V, including the privileged control and
 status registers (CSRs) and instructions defined in Zicsr
-{cheri_legacy_ext_name}:: Extends {cheri_base_ext_name} with features to ensure
+{cheri_default_ext_name}:: Extends {cheri_base_ext_name} with features to ensure
 that the ISA extended with CHERI allows backwards binary compatibility with
-RISC-V
-{cheri_mode_ext_name}:: Adds a mode bit in the encoding of capabilities to
+RISC-V.
+It also adds a mode bit in the encoding of capabilities to
 allow changing the current CHERI execution mode using indirect jump
-instructions
+instructions.
 {cheri_pte_ext_name}:: CHERI extension for RISC-V harts supporting page-based
-virtual-memory
+virtual-memory.
 {cheri_vectorcap_ext_name}:: CHERI extension for the RISC-V Vector (V)
 extension. It adds support for storing CHERI capabilities in
-vector registers, intended for vectorised memory copying
+vector registers, intended for vectorised memory copying.
+{tid_ext_name}:: Extension for supporting thread identifiers. This extension
+improves software compartmentalization on CHERI systems.
 
 CAUTION: The extension names are provisional and subject to change.
 
 {cheri_base_ext_name} is defined as the base extension which all CHERI RISC-V
-implementations must support. 
-{cheri_priv_ext_name}, {cheri_legacy_ext_name}, {cheri_mode_ext_name}
+implementations must support. {cheri_default_ext_name}
 and {cheri_pte_ext_name} are optional extensions in addition to
 {cheri_base_ext_name}.
 {cheri_priv_ext_name} extends {cheri_base_ext_name} with integration
 with the standard RISC-V privileged architecture, and is required by
-{cheri_legacy_ext_name}, {cheri_mode_ext_name}, and {cheri_pte_ext_name}.
-{cheri_mode_ext_name} further requires supporting both
-{cheri_base_ext_name} and {cheri_legacy_ext_name}.
+{cheri_default_ext_name} and {cheri_pte_ext_name}.
+
 
 If a standard vector extension is present (indicated in this document as "V",
 but it could equally be one of the subsets defined by a Zve* extension) then
@@ -120,10 +120,10 @@ but it could equally be one of the subsets defined by a Zve* extension) then
 We refer to software as _purecap_ if it utilizes CHERI capabilities for all
 memory accesses -- including loads, stores and instruction fetches -- rather
 than integer addresses. Purecap software requires the CHERI RISC-V hart to
-support {cheri_base_ext_name}. We refer to software as _hybrid_ if it uses
+support {cheri_base_ext_name}. We refer to software as _Hybrid_ if it uses
 integer addresses *or* CHERI capabilities for memory accesses. Hybrid software
 requires the CHERI RISC-V hart to support {cheri_base_ext_name}, {cheri_priv_ext_name},
-{cheri_legacy_ext_name} and {cheri_mode_ext_name}.
+{cheri_default_ext_name}.
 
 TODO: See whether we can remove the requirement on {cheri_priv_ext_name} from hybrid.
 
@@ -138,7 +138,6 @@ ratification
 encodings
 * The ARC are likely to update all CSR addresses
 * Instruction mnemonics may be renamed
-    ** The instruction mnemonics could be the same regardless of CHERI mode
     ** Any changes will affect assembly code, but assembler aliases can provide
 backwards compatibility
 * There is no clarity on how the new Page Table Entry (PTE) bits from
@@ -146,7 +145,7 @@ backwards compatibility
     ** The PTE bits introduce a dependency between exceptions and the stored
 tag bit
 * There is debate on whether different permission encodings are needed for
-XLENMAX=32 and XLENMAX=64
+MXLEN=32 and MXLEN=64
 
 ==== Pending Extensions
 

@@ -6,10 +6,10 @@
 Synopsis::
 Perform an invalidate operation on a cache block
 
-Capability Mode Mnemonic::
+pass:attributes,quotes[{cheri_cap_mode_name}] Mnemonic::
 `cbo.inval 0(cs1)`
 
-Legacy Mode Mnemonic::
+pass:attributes,quotes[{cheri_int_mode_name}] Mnemonic::
 `cbo.inval 0(rs1)`
 
 Encoding::
@@ -17,19 +17,19 @@ Encoding::
 ....
 {reg: [
   {bits: 7,  name: 'opcode',    attr: ['7','MISC-MEM=0001111'],  type: 8},
-  {bits: 5,  name: 'funct5',    attr: ['5','CBO=0000'],     type: 2},
+  {bits: 5,  name: 'funct5',    attr: ['5','CBO=00000'],     type: 2},
   {bits: 3,  name: 'funct3',    attr: ['3','CBO=010'],  type: 8},
   {bits: 5,  name: 'cs1/rs1',   attr: ['5','base'],     type: 4},
   {bits: 12, name: 'funct12',   attr: ['12','CBO.INVAL=00.0000'],   type: 3},
 ]}
 ....
 
-Capability Mode Description::
+pass:attributes,quotes[{cheri_cap_mode_name}] Description::
 A CBO.INVAL instruction performs an invalidate operation on the cache block
 whose effective address is the base address specified in `cs1`. The authorising
 capability for this operation is `cs1`.
 
-Legacy Mode description::
+pass:attributes,quotes[{cheri_int_mode_name}] Description::
 A CBO.INVAL instruction performs an invalidate operation on the cache block
 whose effective address is the base address specified in `rs1`. The
 authorising capability for this operation in <<ddc>>.
@@ -37,11 +37,11 @@ authorising capability for this operation in <<ddc>>.
 :cbo_inval:
 include::cbo_exceptions.adoc[]
 
-Prerequisites for Capability Mode::
+Prerequisites for pass:attributes,quotes[{cheri_cap_mode_name}]::
 Zicbom, {cheri_base_ext_name}
 
-Prerequisites for Legacy Mode::
-Zicbom, {cheri_legacy_ext_name}
+Prerequisites for pass:attributes,quotes[{cheri_int_mode_name}]::
+Zicbom, {cheri_default_ext_name}
 
 Operation::
 [source,SAIL,subs="verbatim,quotes"]

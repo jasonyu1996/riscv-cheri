@@ -1,5 +1,5 @@
 [#section_rv_integration]
-== Integrating Zcheri_purecap with the RISC-V Base Integer Instruction Set
+== Integrating Zcheripurecap with the RISC-V Base Integer Instruction Set
 
 {cheri_base_ext_name} is an extension to the RISC-V ISA. The extension adds a
 carefully selected set of instructions and CSRs that are sufficient to
@@ -12,6 +12,8 @@ components of the base integer RISC-V ISAs.
 
 NOTE: The changes described in this specification also ensure that
 {cheri_base_ext_name} is compatible with RV32E.
+
+NOTE: RV128 is not currently supported by any CHERI extension.
 
 === Memory
 
@@ -26,10 +28,18 @@ The memory address space is circular, so the byte at address
 2^XLEN^ - 1 is adjacent to the byte at address zero. A capability's
 <<section_cap_representable_check>> described in xref:section_cap_encoding[xrefstyle=short] is
 also circular, so address 0 is within the <<section_cap_representable_check>> of a capability
-where address 2^XLENMAX^ - 1 is within the bounds.
+where address 2^MXLEN^ - 1 is within the bounds.
+However, the decoded top field of a capability is MXLEN + 1 bits wide and does *not* wrap, so
+a capability with base 2^MXLEN^ - 1 and top 2^MXLEN^ + 1 is not a subset of the
+<<infinite-cap>> capability and does not authorise access to the byte at address 0.
+Like malformed bounds (see xref:section_cap_malformed[xrefstyle=short]), it is impossible for
+a CHERI core to generate a tagged capability with top > 2^MXLEN^.
+If such a capability exists then it must have been caused by a logic or memory fault.
+Unlike malformed bounds, the top overflowing is not treated as a special case in the
+architecture: normal bounds check rules should be followed.
 
 [#section_riscv_programmers_model]
-=== Programmer's Model for Zcheri_purecap
+=== Programmer's Model for Zcheripurecap
 
 For {cheri_base_ext_name}, the 32 unprivileged *x* registers of the base
 integer ISA are extended so that they are able to hold a capability as well
@@ -38,6 +48,10 @@ and has an out-of-band tag bit. The *x* notation refers to the address field
 of the capability in an unprivileged register while the *c* notation is used
 to refer to the full capability (i.e. address, metadata and tag) held in the
 same unprivileged register.
+
+The tag of the unprivileged *c* registers must be reset to zero. The reset
+values of the metadata and address fields are UNSPECIFIED for all unprivileged
+*c* registers except *c0*.
 
 Register *c0* is hardwired with all bits, including the capability metadata and
 tag, equal to 0. In other words, *c0* is hardwired to the <<null-cap>>
@@ -105,8 +119,8 @@ tag is set and 0 otherwise
 permission fields of the input capability
 * <<GCBASE>>: outputs the expanded base address of the input capability
 * <<GCLEN>>: outputs the length of the input capability. Length is defined as
-`top - base`. The output is 2^XLENMAX^-1 when the capability's length is
-2^XLENMAX^
+`top - base`. The output is 2^MXLEN^-1 when the capability's length is
+2^MXLEN^
 * <<CRAM>>: outputs the nearest bounds alignment that a valid capability can
 represent
 * <<GCHI>>: outputs the compressed capability metadata
@@ -145,9 +159,6 @@ the bounds exactly
 * <<CBLD>>: replace the base, top, address, permissions and mode fields of a
 capability with the fields from another capability
 * <<CMV>>: move a capability from a *c* register to another *c* register
-
-NOTE: <<CBLD>> outputs a capability with tag set to 0 if the input
-capability's bounds are malformed.
 
 ifdef::cheri_v9_annotations[]
 NOTE: *CHERI v9 Note:* <<SCBNDS>> and <<SCBNDSI>> perform the role
@@ -206,12 +217,6 @@ must be set in AP).
 WARNING: #TODO: these cases may cause exceptions in the future - we need a way
 for software to discover and/or control the behaviour#
 
-[#section_uncond_integer_addr_jump]
-==== Unconditional Integer Address Jumps
-
-The <<JALR_MODE>> instruction allows access to standard RISC-V <<JALR>>, so that
-the target register and link registers are both *x* registers, not *c* registers.
-
 [#section_existing_riscv_insns]
 === Existing RISC-V Instructions
 
@@ -245,14 +250,14 @@ to the base behaviour as described below.
 <<JAL>> sign-extends the offset and adds it to the address of
 the jump instruction to form the target address. The target address is
 installed in the address field of <<pcc>>. The capability with the address of the
-instruction following the jump (<<pcc>> + 4) is written to a *c* register.
+instruction following the jump is sealed and written to a *c* register.
 
 <<JALR>>
-allows unconditional jumps to a target capability. The target capability is
+allows unconditional, indirect jumps to a target capability. The target capability is
 obtained by incrementing the capability in the *c* register operand by the
-sign-extended 12-bit immediate if the immediate is not zero, then setting the
-least significant bit of the result to zero, then unsealing. The capability
-with the address of the instruction following the jump (<<pcc>> + 4) is sealed
+sign-extended 12-bit offset, then setting the
+least significant bit of the result to zero. The target capability is unsealed if it is a sentry with zero offset. The capability
+with the address of the instruction following the jump is sealed
 and written to a *c* register.
 
 All jumps cause CHERI exceptions when a minimum sized instruction
@@ -268,10 +273,6 @@ within bounds
 
 <<JAL>> and <<JALR>> can also cause instruction address misaligned exceptions
 following the standard RISC-V rules.
-
-Additionally, <<JALR_MODE>> allows standard RISC-V <<JALR>> behaviour to be
-available, with a zero offset. The target check on a minimum sized instruction
-is still present as for all jumps and branches.
 
 [#condbr-purecap]
 ===== Conditional Branches

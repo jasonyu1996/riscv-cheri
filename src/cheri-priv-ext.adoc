@@ -1,9 +1,9 @@
 [#section_priv_ext]
-== "Zcheri_priv" Extension for Integration with RISC-V Privileged Architecture 
+== "Zcheri_priv" Extension for Integration with RISC-V Privileged Architecture
 
 {cheri_priv_ext_name} extends {cheri_base_ext_name} to allow integration with
 features defined in the privileged architecture of RISC-V.
-Note that similar to the RISC-V design, 
+Note that similar to the RISC-V design,
 {cheri_priv_ext_name} is designed to provide support for common software stacks
 that rely on the standard privileged architecture of RISC-V, but
 {cheri_base_ext_name} also allows
@@ -173,9 +173,9 @@ by the setting of MXL, or has a fixed value if *misa* is zero.
 
 NOTE: RV128 is not currently supported by any CHERI extension
 
-NOTE: A further CHERI extension, {cheri_legacy_ext_name}, optionally makes
+NOTE: A further CHERI extension, {cheri_default_ext_name}, optionally makes
 MXL writeable, so implementations that support multiple base ISAs must support
-both {cheri_priv_ext_name} and {cheri_legacy_ext_name}.
+both {cheri_priv_ext_name} and {cheri_default_ext_name}.
 
 [#mstatus,reftext="mstatus"]
 ==== Machine Status Registers (mstatus and mstatush)
@@ -198,9 +198,9 @@ performed from M-mode, S-mode, or U-mode, respectively, are little endian
 read only and equal to MBE, if S-mode or U-mode, respectively, is implemented,
 or read only zero otherwise.
 
-NOTE: A further CHERI extension, {cheri_legacy_ext_name}, optionally makes SXL,
+NOTE: A further CHERI extension, {cheri_default_ext_name}, optionally makes SXL,
 UXL, MBE, SBE, and UBE writeable, so implementations that support multiple base
-ISAs must support both {cheri_priv_ext_name} and {cheri_legacy_ext_name}.
+ISAs must support both {cheri_priv_ext_name} and {cheri_default_ext_name}.
 
 [#mtvec, reftext="mtvec"]
 ==== Machine Trap-Vector Base-Address Registers (mtvec)

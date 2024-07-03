@@ -1,11 +1,5 @@
 = RISC-V Specification for CHERI Extensions
-Authors: Hesham Almatary, Andres Amaya Garcia, John Baldwin, David Chisnall,
-Jessica Clarke, Brooks Davis, Nathaniel Wesley Filardo, Franz A. Fuchs, Timothy
-Hutt, Alexandre Joannou, Tariq Kurd, Ben Laurie, A. Theodore Markettos, David
-McKay, Jamie Melling, Stuart Menefy, Simon W. Moore, Peter G. Neumann, Robert
-Norton, Alexander Richardson, Michael Roe, Peter Rugg, Peter Sewell, Carl Shaw,
-Robert N. M. Watson, Jonathan Woodruff, Jason Yu
-
+Authors: Hesham Almatary, Andres Amaya Garcia, John Baldwin, David Chisnall, Jessica Clarke, Brooks Davis, Nathaniel Wesley Filardo, Franz A. Fuchs, Timothy Hutt, Alexandre Joannou, Tariq Kurd, Ben Laurie, A. Theodore Markettos, David McKay, Jamie Melling, Stuart Menefy, Simon W. Moore, Peter G. Neumann, Robert Norton, Alexander Richardson, Michael Roe, Peter Rugg, Peter Sewell, Carl Shaw, Robert N. M. Watson, Jonathan Woodruff, Jason Yu
 include::attributes.adoc[]
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -52,11 +46,13 @@ include::debug-integration.adoc[]
 
 include::cheri-priv-ext.adoc[]
 
+include::trigger-integration.adoc[]
+
 include::cheri-pte-ext.adoc[]
 
-include::riscv-legacy-integration.adoc[]
+include::riscv-hybrid-integration.adoc[]
 
-include::riscv-mode-integration.adoc[]
+include::tid-ext.adoc[]
 
 include::instructions.adoc[]
 

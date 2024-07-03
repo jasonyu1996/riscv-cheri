@@ -23,22 +23,45 @@ Encoding::
 include::wavedrom/acperm.adoc[]
 
 Description::
-Converts the AP and SDP fields of capability `cs1` into a bit field; one bit
-per permission as shown below. Then calculate the bitwise AND of the bit field
-with the mask `rs2` . Set the AP and SDP fields of `cs1` as indicated in the
-resulting bit field -- the capability grants a permission if the corresponding
-bit is set in the bit field -- and write the output capability to `cd` . The
-output capability has its tag set to 0 if `cs1` is sealed.
 
 include::../img/acperm_bit_field.edn[]
 
-NOTE: The AP field is not able to encode all combinations of permissions when
-XLENMAX=32. If permissions that cannot be encoded are indicated, ACPERM
-outputs a capability with all architectural permissions cleared.
+ACPERM performs the following operations:
 
-CAUTION: TODO: this may not be correct - we should work through the
- different combinations which are possible for removing a permission
- for RV32, where it is restricted, and decide what to do in each case
+. Convert the AP and SDP fields of capability `cs1` into the format shown above
+.. SDPLEN is defined in <<sdp_bit_width>>
+. Calculate the bitwise AND of the bit field with the mask `rs2`.
+. If the AP and <<m_bit>> field in `cs1` could not have been produced by <<ACPERM>> then
+clear all AP permissions and the <<m_bit>>, and skip the next step
+. Clear AP permissions as required to meet the rules below.
+. Encode the AP permissions for MXLEN=32 according to <<cap_perms_encoding32>>.
+. Copy `cs1` to `cd`, and update the AP and SDP fields with the newly calculated versions.
+. Set `cd.tag=0` if `cs1` is sealed.
++
+Some combinations of permissions cannot be encoded for MXLEN=32, and are not useful when MXLEN=64.
+These cases are defined to return useful minimal sets of permissions, which may be no permissions.
++
+NOTE: Future extensions may allow more combinations of permissions, especially for MXLEN=64.
+
+The common rules are:
+
+. <<asr_perm>> cannot be set without <<x_perm>> being set
+.. Clear <<asr_perm>> unless <<x_perm>> is set
+. <<c_perm>> cannot be set without at least one of <<r_perm>> or <<w_perm>> being set.
+.. Clear <<c_perm>> unless <<r_perm>> or <<w_perm>> are set.
+. <<m_bit>> cannot be set without <<x_perm>> being set
+.. Clear <<m_bit>> unless <<x_perm>> is set
+
+NOTE: The combination of <<x_perm>> clear and <<m_bit>> set is reserved for future extensions.
+
+The MXLEN=32 additional rules are:
+
+. Clear <<asr_perm>> unless _all_ other permissions are set
+. Clear <<c_perm>> and <<x_perm>> if <<r_perm>> is not set
+. Clear <<x_perm>> if <<x_perm>> and <<r_perm>> _are_ set, but <<c_perm>> and <<w_perm>> _are not_ set.
+
+Exceptions::
+include::require_cre.adoc[]
 
 Prerequisites::
 {cheri_base_ext_name}
